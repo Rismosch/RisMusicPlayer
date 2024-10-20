@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import com.rismosch.ris_music_player.ui.theme.RisMusicPlayerTheme
 
@@ -59,7 +61,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             RisMusicPlayerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SettingsScreen(
+                    MainUi(
+                        activity = this,
                         openDirectoryLauncher,
                         globalSettings,
                         modifier = Modifier.padding(innerPadding),
@@ -87,12 +90,34 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SettingsScreen(
+fun MainUi(
+    activity: ComponentActivity,
     openDirectoryLauncher: ActivityResultLauncher<Intent>,
     globalSettings: GlobalSettings,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(16.dp)) {
+        Button(onClick = {
+            val intent = Intent(activity, BrowserActivity::class.java)
+            startActivity(activity, intent, null)
+        }) {
+            Text(text = "Browser")
+        }
+
+        Button(onClick = {
+            val intent = Intent(activity, SettingsActivity::class.java)
+            startActivity(activity, intent, null)
+        }) {
+            Text(text = "Settings")
+        }
+
+        Text(
+            text = "this is the main ui",
+            modifier = modifier
+        )
+
+        return;
+
         Text(
             text = "Settings",
             style = MaterialTheme.typography.headlineLarge,
