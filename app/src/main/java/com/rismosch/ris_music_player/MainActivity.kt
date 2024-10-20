@@ -35,24 +35,22 @@ import com.rismosch.ris_music_player.ui.theme.RisMusicPlayerTheme
 
 const val PICK_DIRECTORY_REQUEST_CODE = 42
 
-class GlobalSettings {
-    var uri by mutableStateOf(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
-    var switchValue by mutableStateOf(true)
-}
-
 class MainActivity : ComponentActivity() {
     private lateinit var openDirectoryLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var globalSettings = GlobalSettings();
+        val settingsSerializer = SettingsSerializer()
+        val deserializedSettings = settingsSerializer.Deserialize(this)
+        val globalSettings = deserializedSettings ?: GlobalSettings()
 
         openDirectoryLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
                     result.data?.data?.also { uri ->
-                        globalSettings.uri = uri;
+                        globalSettings.uri = uri
+                        settingsSerializer.Serialize(this, globalSettings)
                     }
                 }
             }
@@ -116,7 +114,7 @@ fun MainUi(
             modifier = modifier
         )
 
-        return;
+        //return;
 
         Text(
             text = "Settings",
